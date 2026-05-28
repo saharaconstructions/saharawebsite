@@ -31,7 +31,7 @@ export const Route = createFileRoute("/")({
       { title: "Sahara Constructions — Building Trust. Creating Future." },
       { name: "description", content: "Premium construction services in Bhusawal. Get a free quote for residential, commercial, RCC, interior, and turnkey building projects." },
       { property: "og:title", content: "Sahara Constructions — Building Trust. Creating Future." },
-      { property: "og:description", content: "18+ years of experience. 100+ projects completed. Quality assured materials. Trusted by families in Bhusawal." },
+      { property: "og:description", content: "18+ years of experience. 50+ projects completed. Quality assured materials. Trusted by families in Bhusawal." },
     ],
   }),
   component: HomePage,

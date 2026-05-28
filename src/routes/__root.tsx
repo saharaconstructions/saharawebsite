@@ -38,7 +38,7 @@ export const Route = createRootRoute({
       { name: "author", content: "Sahara Constructions" },
       { name: "theme-color", content: "#1a2e6b" },
       { property: "og:title", content: "Sahara Constructions — Building Trust. Creating Future." },
-      { property: "og:description", content: "Premium construction services across Maharashtra. 8+ years, 100+ projects, quality assured materials." },
+      { property: "og:description", content: "Premium construction services across Maharashtra. 18+ years, 50+ projects, quality assured materials." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
