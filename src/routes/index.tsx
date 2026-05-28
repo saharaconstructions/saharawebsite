@@ -80,9 +80,6 @@ const catalogueImages = [
   { src: cat11, label: "Why Us?" },
 ];
 
-
-// Add this component above function HomePage()
-
 const igReels = [
   "DUNOZY6Dcfd",
   "DSzzqX8DAJ3",
@@ -91,7 +88,6 @@ const igReels = [
   "DSS3Y4EDJFN",
 ];
 
-// Safe helper — add above the component
 function processInstagramEmbeds() {
   try {
     (window as any).instgrm?.Embeds?.process();
@@ -123,6 +119,7 @@ function InstagramCarousel() {
     document.body.appendChild(script);
   }, []);
 
+  // On mobile show only current; on md+ show prev/current/next
   const visibleIndices = [
     (current - 1 + igReels.length) % igReels.length,
     current,
@@ -131,42 +128,48 @@ function InstagramCarousel() {
 
   return (
     <>
-      <div className="relative flex items-center justify-center gap-4 md:gap-6">
+      <div className="relative flex items-center justify-center gap-2 sm:gap-4 md:gap-6">
         {/* Prev */}
         <button
           onClick={prev}
-          className="z-10 flex-shrink-0 w-11 h-11 rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-soft)] grid place-items-center hover:bg-accent transition-colors"
+          className="z-10 flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-soft)] grid place-items-center hover:bg-accent transition-colors"
           aria-label="Previous"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
 
         {/* Cards */}
-        <div className="flex items-center justify-center gap-4 w-full overflow-hidden">
+        <div className="flex items-center justify-center gap-3 md:gap-4 flex-1 min-w-0 overflow-hidden">
           {visibleIndices.map((reelIdx, position) => {
             const isCurrent = position === 1;
             const shortcode = igReels[reelIdx];
 
+            // On mobile, hide side cards entirely
+            const mobileHidden = !isCurrent ? "hidden md:flex" : "flex";
+
             return (
               <div
                 key={`wrapper-${shortcode}`}
-                className={`transition-all duration-500 flex-shrink-0 rounded-2xl overflow-hidden border border-border
+                className={`${mobileHidden} transition-all duration-500 flex-shrink-0 rounded-2xl overflow-hidden border border-border flex-col
                   ${isCurrent
-                    ? "w-[320px] md:w-[380px] scale-100 opacity-100 z-10 shadow-[var(--shadow-elegant)]"
-                    : "w-[240px] md:w-[280px] scale-90 opacity-40 hidden md:block z-0"
+                    ? "w-full max-w-[300px] sm:max-w-[340px] md:w-[320px] md:max-w-none lg:w-[360px] scale-100 opacity-100 z-10 shadow-[var(--shadow-elegant)]"
+                    : "md:w-[220px] lg:w-[260px] scale-90 opacity-40 z-0"
                   }`}
-                style={{ maxHeight: isCurrent ? 680 : 600 }}
               >
                 {!loaded[shortcode] && (
-                  <div className="w-full aspect-[9/16] bg-muted flex items-center justify-center rounded-2xl">
+                  <div className="w-full bg-muted flex items-center justify-center rounded-2xl" style={{ aspectRatio: "9/16", minHeight: 400 }}>
                     <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
                   </div>
                 )}
                 <iframe
                   key={`iframe-${shortcode}`}
                   src={`https://www.instagram.com/reel/${shortcode}/embed/`}
-                  className={`w-full rounded-2xl transition-opacity duration-300 ${loaded[shortcode] ? "opacity-100" : "opacity-0 h-0"}`}
-                  style={{ height: isCurrent ? 680 : 600, border: "none" }}
+                  className={`w-full rounded-2xl transition-opacity duration-300 ${loaded[shortcode] ? "opacity-100" : "opacity-0 absolute"}`}
+                  style={{
+                    height: isCurrent ? 560 : 500,
+                    border: "none",
+                    display: loaded[shortcode] ? "block" : "none",
+                  }}
                   allowFullScreen
                   scrolling="no"
                   onLoad={() => handleLoad(shortcode)}
@@ -180,45 +183,44 @@ function InstagramCarousel() {
         {/* Next */}
         <button
           onClick={next}
-          className="z-10 flex-shrink-0 w-11 h-11 rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-soft)] grid place-items-center hover:bg-accent transition-colors"
+          className="z-10 flex-shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-soft)] grid place-items-center hover:bg-accent transition-colors"
           aria-label="Next"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
       </div>
 
       {/* Dots */}
-      <div className="flex justify-center gap-2 mt-8">
+      <div className="flex justify-center gap-2 mt-6">
         {igReels.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`rounded-full transition-all duration-300 ${i === current
-              ? "w-6 h-2.5 bg-accent"
-              : "w-2.5 h-2.5 bg-primary/20 hover:bg-primary/40"
-              }`}
+            className={`rounded-full transition-all duration-300 ${
+              i === current
+                ? "w-6 h-2.5 bg-accent"
+                : "w-2.5 h-2.5 bg-primary/20 hover:bg-primary/40"
+            }`}
             aria-label={`Go to reel ${i + 1}`}
           />
         ))}
       </div>
 
       {/* Follow Button */}
-      <div className="text-center mt-10">
+      <div className="text-center mt-8">
         <a
           href="https://www.instagram.com/saharaconstructions_bhusawal/"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-primary text-primary-foreground font-medium shadow-[var(--shadow-soft)] hover:bg-accent transition-colors text-sm"
+          className="inline-flex items-center gap-2.5 px-6 py-3 sm:px-7 sm:py-3.5 rounded-full bg-primary text-primary-foreground font-medium shadow-[var(--shadow-soft)] hover:bg-accent transition-colors text-sm"
         >
-          <Instagram className="w-5 h-5" />
+          <Instagram className="w-4 h-4 sm:w-5 sm:h-5" />
           Follow us on Instagram
         </a>
       </div>
     </>
   );
 }
-
-
 
 function HomePage() {
   return (
@@ -231,18 +233,15 @@ function HomePage() {
           <div className="absolute inset-0 bg-primary/30" />
         </div>
 
-        {/* floating geometric shapes */}
         <div className="absolute top-24 right-10 h-32 w-32 rounded-3xl glass-dark animate-[float_7s_ease-in-out_infinite] hidden md:block" />
         <div className="absolute bottom-32 left-10 h-20 w-20 rounded-2xl bg-accent/30 backdrop-blur-md animate-[float_5s_ease-in-out_infinite] hidden md:block" />
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-28 pb-20 w-full">
           <div className="max-w-3xl">
-
             <span className="inline-flex items-center gap-2 rounded-full glass-dark text-primary-foreground px-4 py-1.5 text-xs font-semibold uppercase tracking-wider">
               <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
               Bhusawal's Trusted Builders
             </span>
-
 
             <h1 className="mt-6 text-5xl sm:text-6xl md:text-7xl font-bold text-primary-foreground leading-[1.05]">
               Building Trust.<br />
@@ -251,11 +250,9 @@ function HomePage() {
               </span>
             </h1>
 
-
             <p className="mt-6 text-lg md:text-xl text-primary-foreground/85 max-w-2xl leading-relaxed">
               Premium end-to-end construction — from concept to keys. Crafted with precision, delivered with integrity.
             </p>
-
 
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
@@ -272,25 +269,24 @@ function HomePage() {
                 View Projects
               </Link>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* TRUST INDICATORS */}
-      <section className="relative -mt-20 z-10 px-4 sm:px-6 lg:px-8">
+      {/* TRUST INDICATORS — fixed mobile layout */}
+      <section className="relative -mt-16 sm:-mt-20 z-10 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="glass rounded-3xl p-6 md:p-10 shadow-[var(--shadow-elegant)]">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-10 shadow-[var(--shadow-elegant)]">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {trustStats.map((s, i) => (
                 <Reveal key={s.label} delay={i * 100}>
-                  <div className="flex items-center gap-4">
-                    <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center text-primary-foreground shadow-[var(--shadow-soft)]">
-                      <s.icon className="h-6 w-6" />
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="h-10 w-10 sm:h-14 sm:w-14 flex-shrink-0 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center text-primary-foreground shadow-[var(--shadow-soft)]">
+                      <s.icon className="h-5 w-5 sm:h-6 sm:w-6" />
                     </div>
-                    <div>
-                      <div className="text-2xl md:text-3xl font-bold gradient-text">{s.value}</div>
-                      <div className="text-xs md:text-sm text-muted-foreground">{s.label}</div>
+                    <div className="min-w-0">
+                      <div className="text-xl sm:text-2xl md:text-3xl font-bold gradient-text truncate">{s.value}</div>
+                      <div className="text-[10px] sm:text-xs md:text-sm text-muted-foreground leading-tight">{s.label}</div>
                     </div>
                   </div>
                 </Reveal>
@@ -441,7 +437,6 @@ function HomePage() {
                     >
                       Book Site Visit <ArrowRight className="h-4 w-4" />
                     </a>
-
                   </div>
                 </div>
                 <div className="relative">
@@ -522,23 +517,20 @@ function HomePage() {
         `}</style>
       </section>
 
-
       {/* INSTAGRAM REELS */}
-      <section className="py-24 md:py-28 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-accent/10 blur-3xl pointer-events-none" />
+      <section className="py-16 sm:py-24 md:py-28 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] rounded-full bg-accent/10 blur-3xl pointer-events-none" />
 
         <div className="mx-auto max-w-7xl relative">
-          {/* Header */}
           <Reveal>
-            <div className="text-center max-w-2xl mx-auto mb-14">
+            <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
               <p className="text-xs uppercase tracking-[0.3em] text-accent font-semibold mb-3">From The Gram</p>
-              <h2 className="text-4xl md:text-5xl font-bold">We're on Instagram</h2>
-
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">We're on Instagram</h2>
               <a
                 href="https://www.instagram.com/saharaconstructions_bhusawal/"
                 target="_blank"
                 rel="noreferrer"
-                className="mt-5 inline-flex items-center gap-2 text-accent font-medium hover:gap-3 transition-all text-sm"
+                className="mt-4 inline-flex items-center gap-2 text-accent font-medium hover:gap-3 transition-all text-sm"
               >
                 @saharaconstructions_bhusawal
               </a>
@@ -548,7 +540,6 @@ function HomePage() {
           <InstagramCarousel />
         </div>
       </section>
-
 
       {/* CTA BANNER */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
