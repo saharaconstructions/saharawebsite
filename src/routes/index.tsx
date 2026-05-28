@@ -48,9 +48,9 @@ const services = [
 
 const trustStats = [
   { icon: Award, value: "18+", label: "Years Experience" },
-  { icon: Building2, value: "100+", label: "Projects Completed" },
+  { icon: Building2, value: "50+", label: "Projects Done" },
   { icon: ShieldCheck, value: "100%", label: "Quality Assured" },
-  { icon: Users, value: "Bhusawal", label: "Trusted Locally" },
+  { icon: Users, value: "4.5/5", label: "Customer Rating" },
 ];
 
 const featuredProjects = [

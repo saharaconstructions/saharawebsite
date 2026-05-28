@@ -172,7 +172,7 @@ function ContactPage() {
             <img
               src={officeImg}
               alt="Sahara Constructions Office"
-              className="w-full h-52 sm:h-64 object-cover"
+              className="w-full h-72 sm:h-80 object-cover"
             />
             <div className="absolute bottom-3 right-3 w-32 h-24 sm:w-36 sm:h-28 rounded-xl overflow-hidden border-2 border-white shadow-lg">
               <iframe
