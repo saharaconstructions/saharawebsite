@@ -25,7 +25,7 @@ function ContactPage() {
   setSubmitting(true);
 
   const formData = new FormData(e.target as HTMLFormElement);
-  formData.append("access_key", import.meta.env.WEB3FORMS_KEY); // paste your key here
+  formData.append("access_key", import.meta.env.VITE_WEB3FORMS_KEY); // paste your key here
   formData.append("subject", "New Quote Request - Sahara Constructions");
 
   try {
