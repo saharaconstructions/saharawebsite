@@ -20,15 +20,34 @@ export const Route = createFileRoute("/contact")({
 function ContactPage() {
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setSubmitting(true);
+
+  const formData = new FormData(e.target as HTMLFormElement);
+  formData.append("access_key", import.meta.env.VITE_WEB3FORMS_KEY); // paste your key here
+  formData.append("subject", "New Quote Request - Sahara Constructions");
+
+  try {
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
       toast.success("Thanks! We'll call you back within 24 hours.");
       (e.target as HTMLFormElement).reset();
-    }, 800);
-  };
+    } else {
+      toast.error("Something went wrong. Please try again.");
+    }
+  } catch {
+    toast.error("Something went wrong. Please try again.");
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   return (
     <>
