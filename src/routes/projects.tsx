@@ -12,6 +12,7 @@ import project5 from "@/assets/project5.png";
 import project6 from "@/assets/project6.png";
 import project7 from "@/assets/project7.png";
 import project8 from "@/assets/project8.png";
+import project9 from "@/assets/project9.png";
 
 export const Route = createFileRoute("/projects")({
   head: () => ({
@@ -65,6 +66,10 @@ const projects: Project[] = [
 
   { title: "Golden Park", img: project8, location: "Khadke Shivar, Bhusawal", status: "Completed", category: "Residential", budget: "", size: "wide",
     year: "", area: "", units: "", tagline: "Highly cheaper project in the Bhusawal city with all modern amenities and specifications.",
+    highlights: ["24 hours water availability", "Layered ambient lighting"] },
+
+    { title: "Luxurious Bunglow", img: project9, location: "Bhusawal", status: "Ongoing", category: "Residential", budget: "", size: "wide",
+    year: "", area: "", units: "", tagline: "Highly modernized and designed in the Bhusawal city with all modern amenities and specifications.",
     highlights: ["24 hours water availability", "Layered ambient lighting"] },
 ];
 

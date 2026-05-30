@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Instagram } from "lucide-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import React from "react";
 import {
   ArrowRight, Building2, Hammer, Home, Paintbrush, Wrench, Droplets,
   Award, Users, ShieldCheck, MapPin, Star, Quote, CheckCircle2,
@@ -24,6 +25,8 @@ import cat8 from "@/assets/cat8.jpg";
 import cat9 from "@/assets/cat9.jpg";
 import cat10 from "@/assets/cat10.jpg";
 import cat11 from "@/assets/cat11.jpg";
+import video1 from "@/assets/video1.mp4";
+import video2 from "@/assets/video2.mp4";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -196,11 +199,10 @@ function InstagramCarousel() {
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`rounded-full transition-all duration-300 ${
-              i === current
+            className={`rounded-full transition-all duration-300 ${i === current
                 ? "w-6 h-2.5 bg-accent"
                 : "w-2.5 h-2.5 bg-primary/20 hover:bg-primary/40"
-            }`}
+              }`}
             aria-label={`Go to reel ${i + 1}`}
           />
         ))}
@@ -276,7 +278,7 @@ function HomePage() {
       {/* TRUST INDICATORS — fixed mobile layout */}
       <section className="relative -mt-16 sm:-mt-20 z-10 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="glass rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-10 shadow-[var(--shadow-elegant)]">
+          <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-10 shadow-[var(--shadow-elegant)] border border-white/20">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {trustStats.map((s, i) => (
                 <Reveal key={s.label} delay={i * 100}>
@@ -541,6 +543,28 @@ function HomePage() {
         </div>
       </section>
 
+      {/* AWARD RECOGNITION */}
+      <section className="py-24 md:py-32 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <Reveal>
+            <SectionHeading
+              eyebrow="Achievements"
+              title="Award Recognition"
+              subtitle="Proud moments that reflect our commitment to excellence in construction."
+            />
+          </Reveal>
+
+          <div className="mt-16 grid md:grid-cols-2 gap-6">
+            <Reveal delay={100}>
+              <VideoCard src={video1} />
+            </Reveal>
+            <Reveal delay={200}>
+              <VideoCard src={video2} />
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
       {/* CTA BANNER */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
@@ -568,4 +592,38 @@ function HomePage() {
       </section>
     </>
   );
+
+  function VideoCard({ src }: { src: string }) {
+    const [playing, setPlaying] = useState(false);
+    const videoRef = React.useRef<HTMLVideoElement>(null);
+
+    const handlePlay = () => {
+      setPlaying(true);
+      videoRef.current?.play();
+    };
+
+    return (
+      <div className="relative rounded-3xl overflow-hidden border border-border shadow-[var(--shadow-elegant)] aspect-video bg-muted">
+        <video
+          ref={videoRef}
+          src={src}
+          className="w-full h-full object-cover"
+          controls={playing}
+          playsInline
+        />
+        {!playing && (
+          <div
+            className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer bg-primary/20"
+            onClick={handlePlay}
+          >
+            <div className="h-16 w-16 rounded-full bg-accent flex items-center justify-center shadow-[var(--shadow-glow)] hover:scale-110 transition-transform">
+              <svg className="w-6 h-6 text-accent-foreground ml-1" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 }
