@@ -6,6 +6,9 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Toaster } from "@/components/ui/sonner";
 
+// Replace with your real GA4 Measurement ID from analytics.google.com
+const GA_MEASUREMENT_ID = "G-QCQ70Y5050";
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -52,6 +55,15 @@ export const Route = createRootRoute({
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" },
+    ],
+    scripts: [
+      { src: `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`, async: true },
+      {
+        children: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_MEASUREMENT_ID}');`,
+      },
     ],
   }),
   shellComponent: RootShell,
