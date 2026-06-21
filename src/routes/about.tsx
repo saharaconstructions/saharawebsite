@@ -5,14 +5,84 @@ import { SectionHeading } from "@/components/SectionHeading";
 import heroImg from "@/assets/hero-construction.jpg";
 import award from "@/assets/award.jpeg";
 
+// ─────────────────────────────────────────────────────────────────────────
+// SEO CONSTANTS — keep these in sync with index.tsx / other routes
+// IMPORTANT: replace SITE_URL with your real production domain before deploy
+// ─────────────────────────────────────────────────────────────────────────
+const SITE_URL = "https://www.saharaconstructions.in";
+const PAGE_URL = `${SITE_URL}/about`;
+const OG_IMAGE = `${SITE_URL}/og-image.jpg`; // 1200x630 social preview image — add this file to /public
+const PAGE_TITLE = "About Sahara Constructions — Vision, Mission & Team | Bhusawal";
+const PAGE_DESCRIPTION =
+  "Learn about Sahara Constructions: our journey since 2008, our vision, mission, and why families and businesses across Bhusawal and the Jalgaon region trust us with their most important builds.";
+
+// JSON-LD: AboutPage + the same Organization details used site-wide.
+// BreadcrumbList helps Google show the page's position in your site hierarchy.
+const aboutJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": PAGE_TITLE,
+  "description": PAGE_DESCRIPTION,
+  "url": PAGE_URL,
+  "mainEntity": {
+    "@type": "GeneralContractor",
+    "name": "Sahara Constructions",
+    "url": SITE_URL,
+    "foundingDate": "2008",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bhusawal",
+      "addressRegion": "Maharashtra",
+      "addressCountry": "IN",
+    },
+    "award": ["RERA Certified", "ISO 9001:2015"],
+  },
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
+    { "@type": "ListItem", "position": 2, "name": "About", "item": PAGE_URL },
+  ],
+};
+
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Sahara Constructions — Vision, Mission & Team" },
-      { name: "description", content: "Learn about Sahara Constructions: our journey, vision, mission, and why families and businesses across Maharashtra trust us with their most important builds." },
-      { property: "og:title", content: "About Sahara Constructions" },
-      { property: "og:description", content: "Family-rooted, quality-obsessed builders. Discover our story, values and the team behind 100+ successful projects." },
-      { property: "og:image", content: heroImg },
+      { title: PAGE_TITLE },
+      { name: "description", content: PAGE_DESCRIPTION },
+      {
+        name: "keywords",
+        content:
+          "about Sahara Constructions, construction company history Bhusawal, builders vision mission, RERA certified builders Maharashtra, ISO certified construction company",
+      },
+      { name: "robots", content: "index, follow" },
+
+      // Open Graph
+      { property: "og:title", content: PAGE_TITLE },
+      { property: "og:description", content: PAGE_DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: PAGE_URL },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:site_name", content: "Sahara Constructions" },
+      { property: "og:locale", content: "en_IN" },
+
+      // Twitter
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: PAGE_TITLE },
+      { name: "twitter:description", content: PAGE_DESCRIPTION },
+      { name: "twitter:image", content: OG_IMAGE },
+    ],
+    links: [
+      { rel: "canonical", href: PAGE_URL },
+    ],
+    scripts: [
+      { type: "application/ld+json", children: JSON.stringify(aboutJsonLd) },
+      { type: "application/ld+json", children: JSON.stringify(breadcrumbJsonLd) },
     ],
   }),
   component: AboutPage,
@@ -51,7 +121,7 @@ function AboutPage() {
           </Reveal>
           <Reveal delay={240}>
             <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              For over 8 years, we've built more than buildings — we've built reputations, relationships and resilient futures for families across Bhusawal and Jalgaon region.
+              For over 18 years, we've built more than buildings — we've built reputations, relationships and resilient futures for families across Bhusawal and Jalgaon region.
             </p>
           </Reveal>
         </div>
@@ -126,39 +196,40 @@ function AboutPage() {
       </section>
 
       {/* Awards */}
-<section className="py-20 px-4 sm:px-6 lg:px-8">
-  <div className="mx-auto max-w-7xl rounded-[2rem] bg-primary text-primary-foreground p-10 md:p-14 relative overflow-hidden">
-    <div className="absolute inset-0 opacity-40" style={{ background: "var(--gradient-mesh)" }} />
-    <div className="relative grid md:grid-cols-2 gap-10 items-center">
-      
-      {/* Left - text + badges */}
-      <div>
-        <Award className="h-10 w-10 text-accent" />
-        <h3 className="mt-4 text-3xl md:text-4xl font-bold">Recognised for excellence.</h3>
-        <p className="mt-3 text-primary-foreground/80">Trusted certifications and recognitions that back our craft.</p>
-        <div className="mt-6 grid grid-cols-2 gap-4">
-          {["RERA Certified", "ISO 9001:2015"].map((b) => (
-            <div key={b} className="rounded-2xl glass-dark p-4 text-center">
-              <div className="text-sm font-semibold text-accent uppercase tracking-wider">{b}</div>
-              <div className="mt-1 text-xs text-primary-foreground/70">Verified</div>
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl rounded-[2rem] bg-primary text-primary-foreground p-10 md:p-14 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-40" style={{ background: "var(--gradient-mesh)" }} />
+          <div className="relative grid md:grid-cols-2 gap-10 items-center">
+
+            {/* Left - text + badges */}
+            <div>
+              <Award className="h-10 w-10 text-accent" />
+              <h3 className="mt-4 text-3xl md:text-4xl font-bold">Recognised for excellence.</h3>
+              <p className="mt-3 text-primary-foreground/80">Trusted certifications and recognitions that back our craft.</p>
+              <div className="mt-6 grid grid-cols-2 gap-4">
+                {["RERA Certified", "ISO 9001:2015"].map((b) => (
+                  <div key={b} className="rounded-2xl glass-dark p-4 text-center">
+                    <div className="text-sm font-semibold text-accent uppercase tracking-wider">{b}</div>
+                    <div className="mt-1 text-xs text-primary-foreground/70">Verified</div>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
+
+            {/* Right - award photo */}
+            <div className="relative">
+              <div className="absolute -inset-2 rounded-3xl bg-accent/30 blur-2xl" />
+              <img
+                src={award}
+                alt="Sahara Constructions receiving the Maharashtra Business Award for excellence in construction"
+                loading="lazy"
+                className="relative rounded-3xl shadow-2xl w-full object-cover"
+              />
+            </div>
+
+          </div>
         </div>
-      </div>
-
-      {/* Right - award photo */}
-      <div className="relative">
-        <div className="absolute -inset-2 rounded-3xl bg-accent/30 blur-2xl" />
-        <img
-          src={award}
-          alt="Maharashtra Business Award Ceremony"
-          className="relative rounded-3xl shadow-2xl w-full object-cover"
-        />
-      </div>
-
-    </div>
-  </div>
-</section>
+      </section>
     </>
   );
 }

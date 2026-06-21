@@ -18,15 +18,93 @@ import Img10 from "@/assets/service10.png";
 import Img11 from "@/assets/service11.png";
 import Img12 from "@/assets/service12.png";
 
+// ─────────────────────────────────────────────────────────────────────────
+// SEO CONSTANTS — keep these in sync with index.tsx / other routes
+// IMPORTANT: replace SITE_URL with your real production domain before deploy
+// ─────────────────────────────────────────────────────────────────────────
+const SITE_URL = "https://www.saharaconstructions.in";
+const PAGE_URL = `${SITE_URL}/services`;
+const OG_IMAGE = `${SITE_URL}/og-image.jpg`; // 1200x630 social preview image — add this file to /public
+const PAGE_TITLE = "Services — Sahara Constructions | RCC, Interiors, Plumbing & More";
+const PAGE_DESCRIPTION =
+  "Comprehensive construction services in Bhusawal: building construction, RCC, plastering, furnishing, furniture, plumbing, electrical, painting, rainwater harvesting, waterproofing & centralised air cooling — all under one trusted roof.";
+
+const serviceNames = [
+  "Building Construction", "RCC Work", "Plastering", "Home Furnishing", "Furniture",
+  "Plumbing", "Electrical Fittings", "Painting (Interior & Exterior)",
+  "Row Houses, Bungalows & Apartments", "Rainwater Harvesting", "Waterproofing",
+  "Centralised Air Cooling",
+];
+
+// JSON-LD: ItemList of Service offerings, tied to the GeneralContractor entity.
+const servicesJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Sahara Constructions Services",
+  "url": PAGE_URL,
+  "itemListElement": serviceNames.map((name, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "item": {
+      "@type": "Service",
+      "name": name,
+      "provider": {
+        "@type": "GeneralContractor",
+        "name": "Sahara Constructions",
+        "url": SITE_URL,
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "Bhusawal",
+      },
+    },
+  })),
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
+    { "@type": "ListItem", "position": 2, "name": "Services", "item": PAGE_URL },
+  ],
+};
 
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "Services — Sahara Constructions | RCC, Interiors, Plumbing & More" },
-      { name: "description", content: "Comprehensive construction services: building construction, RCC, plastering, interiors, plumbing, electrical, painting, waterproofing, rainwater harvesting and more." },
-      { property: "og:title", content: "Construction Services — Sahara Constructions" },
-      { property: "og:description", content: "Everything from foundation to finishing under one trusted roof." },
-      { property: "og:image", content: Img1 },
+      { title: PAGE_TITLE },
+      { name: "description", content: PAGE_DESCRIPTION },
+      {
+        name: "keywords",
+        content:
+          "construction services Bhusawal, RCC work Maharashtra, interior design Bhusawal, plumbing electrical contractor, waterproofing services, rainwater harvesting, modular furniture Bhusawal",
+      },
+      { name: "robots", content: "index, follow" },
+
+      // Open Graph
+      { property: "og:title", content: PAGE_TITLE },
+      { property: "og:description", content: PAGE_DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: PAGE_URL },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:site_name", content: "Sahara Constructions" },
+      { property: "og:locale", content: "en_IN" },
+
+      // Twitter
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: PAGE_TITLE },
+      { name: "twitter:description", content: PAGE_DESCRIPTION },
+      { name: "twitter:image", content: OG_IMAGE },
+    ],
+    links: [
+      { rel: "canonical", href: PAGE_URL },
+    ],
+    scripts: [
+      { type: "application/ld+json", children: JSON.stringify(servicesJsonLd) },
+      { type: "application/ld+json", children: JSON.stringify(breadcrumbJsonLd) },
     ],
   }),
   component: ServicesPage,
@@ -79,7 +157,7 @@ function ServicesPage() {
                 <div className="relative">
                   <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-primary/15 to-accent/20 blur-2xl" />
                   <div className="relative rounded-[2rem] overflow-hidden shadow-[var(--shadow-elegant)]">
-                    <img src={s.img} alt={s.title} loading="lazy" width={1280} height={960} className="w-full aspect-[4/3] object-cover" />
+                    <img src={s.img} alt={`${s.title} service by Sahara Constructions in Bhusawal`} loading="lazy" width={1280} height={960} className="w-full aspect-[4/3] object-cover" />
                   </div>
                   <div className="absolute -bottom-5 -right-5 h-20 w-20 rounded-2xl bg-accent flex items-center justify-center text-accent-foreground shadow-[var(--shadow-glow)] hidden md:flex">
                     <span className="text-2xl font-bold">{String(i + 1).padStart(2, "0")}</span>

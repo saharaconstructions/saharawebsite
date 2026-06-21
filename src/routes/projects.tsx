@@ -14,18 +14,16 @@ import project7 from "@/assets/project7.png";
 import project8 from "@/assets/project8.png";
 import project9 from "@/assets/project9.png";
 
-export const Route = createFileRoute("/projects")({
-  head: () => ({
-    meta: [
-      { title: "Projects — Sahara Constructions Portfolio" },
-      { name: "description", content: "Explore our portfolio: residential villas, commercial complexes, row houses and signature apartment projects across Maharashtra." },
-      { property: "og:title", content: "Projects — Sahara Constructions" },
-      { property: "og:description", content: "Browse 100+ delivered and ongoing projects spanning homes, offices and townships." },
-      { property: "og:image", content: project1 },
-    ],
-  }),
-  component: ProjectsPage,
-});
+// ─────────────────────────────────────────────────────────────────────────
+// SEO CONSTANTS — keep these in sync with index.tsx / other routes
+// IMPORTANT: replace SITE_URL with your real production domain before deploy
+// ─────────────────────────────────────────────────────────────────────────
+const SITE_URL = "https://www.saharaconstructions.in";
+const PAGE_URL = `${SITE_URL}/projects`;
+const OG_IMAGE = `${SITE_URL}/og-image.jpg`; // 1200x630 social preview image — add this file to /public
+const PAGE_TITLE = "Projects — Sahara Constructions Portfolio | Bhusawal Builders";
+const PAGE_DESCRIPTION =
+  "Explore Sahara Constructions' portfolio: residential villas, row houses, luxury bungalows and apartment projects completed and ongoing across Bhusawal, Maharashtra.";
 
 type Category = "All" | "Residential" | "Commercial" | "Ongoing" | "Completed";
 
@@ -73,6 +71,86 @@ const projects: Project[] = [
     highlights: ["24 hours water availability", "Layered ambient lighting"] },
 ];
 
+// JSON-LD: CollectionPage with each project as a Residence item.
+// Note: budget/area are intentionally left out of structured data where
+// blank in source data, since empty schema fields can trigger Google
+// structured-data warnings.
+const projectsJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": PAGE_TITLE,
+  "description": PAGE_DESCRIPTION,
+  "url": PAGE_URL,
+  "mainEntity": {
+    "@type": "ItemList",
+    "itemListElement": projects.map((p, i) => ({
+      "@type": "ListItem",
+      "position": i + 1,
+      "item": {
+        "@type": "Residence",
+        "name": p.title,
+        "description": p.tagline,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": p.location,
+          "addressRegion": "Maharashtra",
+          "addressCountry": "IN",
+        },
+        ...(p.area ? { "floorSize": { "@type": "QuantitativeValue", "value": p.area } } : {}),
+      },
+    })),
+  },
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
+    { "@type": "ListItem", "position": 2, "name": "Projects", "item": PAGE_URL },
+  ],
+};
+
+export const Route = createFileRoute("/projects")({
+  head: () => ({
+    meta: [
+      { title: PAGE_TITLE },
+      { name: "description", content: PAGE_DESCRIPTION },
+      {
+        name: "keywords",
+        content:
+          "Sahara Constructions projects, construction portfolio Bhusawal, row houses Bhusawal, luxury bungalow Bhusawal, 2 BHK duplex Bhusawal, ongoing construction projects Maharashtra",
+      },
+      { name: "robots", content: "index, follow" },
+
+      // Open Graph
+      { property: "og:title", content: PAGE_TITLE },
+      { property: "og:description", content: PAGE_DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: PAGE_URL },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:site_name", content: "Sahara Constructions" },
+      { property: "og:locale", content: "en_IN" },
+
+      // Twitter
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: PAGE_TITLE },
+      { name: "twitter:description", content: PAGE_DESCRIPTION },
+      { name: "twitter:image", content: OG_IMAGE },
+    ],
+    links: [
+      { rel: "canonical", href: PAGE_URL },
+    ],
+    scripts: [
+      { type: "application/ld+json", children: JSON.stringify(projectsJsonLd) },
+      { type: "application/ld+json", children: JSON.stringify(breadcrumbJsonLd) },
+    ],
+  }),
+  component: ProjectsPage,
+});
+
 const filters: Category[] = ["All", "Residential", "Commercial", "Ongoing", "Completed"];
 
 function ProjectsPage() {
@@ -114,7 +192,7 @@ function ProjectsPage() {
                   onClick={() => setSelected(p)}
                   className="group relative rounded-3xl overflow-hidden bg-card hover-lift cursor-pointer aspect-[4/3]"
                 >
-                  <img src={p.img} alt={p.title} loading="lazy" width={1280} height={960} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <img src={p.img} alt={`${p.title} — ${p.status} ${p.category.toLowerCase()} project by Sahara Constructions in ${p.location}`} loading="lazy" width={1280} height={960} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/10 to-transparent" />
                   <div className="absolute bottom-0 inset-x-0 p-5 text-primary-foreground flex items-end justify-between">
                     <div>
@@ -161,7 +239,7 @@ function ProjectsPage() {
             <div className="grid md:grid-cols-2">
               {/* Left: Image hero with blueprint overlay */}
               <div className="relative h-72 md:h-full min-h-[420px] overflow-hidden">
-                <img src={selected.img} alt={selected.title} className="absolute inset-0 h-full w-full object-cover object-center" />
+                <img src={selected.img} alt={`${selected.title} — ${selected.location} | Sahara Constructions`} className="absolute inset-0 h-full w-full object-cover object-center" />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/30 to-primary/50" />
                 <button onClick={() => setSelected(null)} aria-label="Close" className="absolute top-5 right-5 h-10 w-10 rounded-full glass-dark text-primary-foreground flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors">
                   <X className="h-4 w-4" />

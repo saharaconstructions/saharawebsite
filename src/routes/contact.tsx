@@ -5,13 +5,95 @@ import { Reveal } from "@/components/Reveal";
 import { toast } from "sonner";
 import officeImg from "@/assets/office.jpeg";
 
+// ─────────────────────────────────────────────────────────────────────────
+// SEO CONSTANTS — keep these in sync with index.tsx / other routes
+// IMPORTANT: replace SITE_URL with your real production domain before deploy
+// ─────────────────────────────────────────────────────────────────────────
+const SITE_URL = "https://www.saharaconstructions.in";
+const PAGE_URL = `${SITE_URL}/contact`;
+const OG_IMAGE = `${SITE_URL}/og-image.jpg`; // 1200x630 social preview image — add this file to /public
+const PAGE_TITLE = "Contact Sahara Constructions — Get a Free Quote | Bhusawal";
+const PAGE_DESCRIPTION =
+  "Talk to Sahara Constructions about your project. Call +91 98347 71993, WhatsApp us or fill the form for a free, personalised quote within 24 hours. Office in Khadka, Bhusawal.";
+
+// Coordinates pulled from the existing Google Maps embed (2d=lng, 3d=lat)
+const GEO_LAT = 21.0313018;
+const GEO_LNG = 75.8005562;
+
+// JSON-LD: ContactPage wrapping the same GeneralContractor entity, with
+// full address, phone and geo-coordinates for local/maps SEO.
+const contactJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": PAGE_TITLE,
+  "description": PAGE_DESCRIPTION,
+  "url": PAGE_URL,
+  "mainEntity": {
+    "@type": "GeneralContractor",
+    "name": "Sahara Constructions",
+    "url": SITE_URL,
+    "telephone": "+91-9834771993",
+    "email": "saharaconstructions29@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Khadka - Bhusawal Rd, Samrth Nagar, Khadake",
+      "addressLocality": "Bhusawal",
+      "addressRegion": "Maharashtra",
+      "postalCode": "425201",
+      "addressCountry": "IN",
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": GEO_LAT,
+      "longitude": GEO_LNG,
+    },
+  },
+};
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
+    { "@type": "ListItem", "position": 2, "name": "Contact", "item": PAGE_URL },
+  ],
+};
+
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact Sahara Constructions — Get a Free Quote" },
-      { name: "description", content: "Talk to Sahara Constructions about your project. Call +91 98347 71993, WhatsApp us or fill the form for a free quote within 24 hours." },
-      { property: "og:title", content: "Contact Sahara Constructions" },
-      { property: "og:description", content: "Get a personalised quote within 24 hours. Call, WhatsApp or message us today." },
+      { title: PAGE_TITLE },
+      { name: "description", content: PAGE_DESCRIPTION },
+      {
+        name: "keywords",
+        content:
+          "contact Sahara Constructions, construction company Bhusawal phone number, get free quote builder, Khadka Bhusawal construction office, RERA builder contact Maharashtra",
+      },
+      { name: "robots", content: "index, follow" },
+
+      // Open Graph
+      { property: "og:title", content: PAGE_TITLE },
+      { property: "og:description", content: PAGE_DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: PAGE_URL },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:site_name", content: "Sahara Constructions" },
+      { property: "og:locale", content: "en_IN" },
+
+      // Twitter
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: PAGE_TITLE },
+      { name: "twitter:description", content: PAGE_DESCRIPTION },
+      { name: "twitter:image", content: OG_IMAGE },
+    ],
+    links: [
+      { rel: "canonical", href: PAGE_URL },
+    ],
+    scripts: [
+      { type: "application/ld+json", children: JSON.stringify(contactJsonLd) },
+      { type: "application/ld+json", children: JSON.stringify(breadcrumbJsonLd) },
     ],
   }),
   component: ContactPage,
@@ -146,7 +228,8 @@ function ContactPage() {
             <div className="relative rounded-2xl overflow-hidden border border-border">
               <img
                 src={officeImg}
-                alt="Sahara Constructions Office"
+                alt="Sahara Constructions office building, Khadka - Bhusawal Road, Maharashtra"
+                loading="lazy"
                 className="w-full h-64 xl:h-80 object-cover"
               />
               <div className="absolute bottom-3 right-3 w-36 h-28 rounded-xl overflow-hidden border-2 border-white shadow-lg">
@@ -171,7 +254,8 @@ function ContactPage() {
           <div className="relative rounded-2xl overflow-hidden border border-border">
             <img
               src={officeImg}
-              alt="Sahara Constructions Office"
+              alt="Sahara Constructions office building, Khadka - Bhusawal Road, Maharashtra"
+              loading="lazy"
               className="w-full h-72 sm:h-80 object-cover"
             />
             <div className="absolute bottom-3 right-3 w-32 h-24 sm:w-36 sm:h-28 rounded-xl overflow-hidden border-2 border-white shadow-lg">

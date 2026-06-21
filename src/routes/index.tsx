@@ -28,13 +28,98 @@ import cat11 from "@/assets/cat11.jpg";
 import video1 from "@/assets/video1.mp4";
 import video2 from "@/assets/video2.mp4";
 
+// ─────────────────────────────────────────────────────────────────────────
+// SEO CONSTANTS
+// IMPORTANT: replace SITE_URL with your real production domain before deploy
+// ─────────────────────────────────────────────────────────────────────────
+const SITE_URL = "https://www.saharaconstructions.in";
+const PAGE_URL = `${SITE_URL}/`;
+const OG_IMAGE = `${SITE_URL}/og-image.jpg`; // 1200x630 social preview image — add this file to /public
+const PAGE_TITLE = "Sahara Constructions Bhusawal — Building Trust. Creating Future.";
+const PAGE_DESCRIPTION =
+  "Sahara Constructions is Bhusawal's trusted construction company with 18+ years of experience and 50+ completed projects. We deliver residential, commercial, RCC, interior design, plumbing, electrical & waterproofing services with 100% quality-assured materials. Get a free quote today.";
+
+// JSON-LD structured data for local SEO / Google Maps / rich results.
+// GeneralContractor is a more specific subtype of LocalBusiness, which
+// Google recognises and prefers for construction companies.
+const localBusinessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "GeneralContractor",
+  "name": "Sahara Constructions",
+  "image": OG_IMAGE,
+  "url": SITE_URL,
+  "telephone": "+91-9834771993",
+  "priceRange": "₹₹",
+  "description": PAGE_DESCRIPTION,
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Bhusawal",
+    "addressRegion": "Maharashtra",
+    "addressCountry": "IN",
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Bhusawal",
+  },
+  "sameAs": [
+    "https://www.instagram.com/saharaconstructions_bhusawal/",
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.5",
+    "reviewCount": "50",
+  },
+  "founder": {
+    "@type": "Organization",
+    "name": "Sahara Constructions",
+  },
+  "makesOffer": [
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Residential Construction" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Commercial Construction" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "RCC Work" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Interior Design" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Plumbing & Electrical" } },
+    { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Waterproofing" } },
+  ],
+};
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sahara Constructions — Building Trust. Creating Future." },
-      { name: "description", content: "Premium construction services in Bhusawal. Get a free quote for residential, commercial, RCC, interior, and turnkey building projects." },
-      { property: "og:title", content: "Sahara Constructions — Building Trust. Creating Future." },
-      { property: "og:description", content: "18+ years of experience. 50+ projects completed. Quality assured materials. Trusted by families in Bhusawal." },
+      { title: PAGE_TITLE },
+      { name: "description", content: PAGE_DESCRIPTION },
+      {
+        name: "keywords",
+        content:
+          "construction company Bhusawal, builders Bhusawal, RCC construction Maharashtra, residential construction Bhusawal, commercial construction, interior design Bhusawal, Sahara Constructions",
+      },
+      { name: "robots", content: "index, follow" },
+
+      // Open Graph
+      { property: "og:title", content: PAGE_TITLE },
+      { property: "og:description", content: PAGE_DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: PAGE_URL },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:site_name", content: "Sahara Constructions" },
+      { property: "og:locale", content: "en_IN" },
+
+      // Twitter
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: PAGE_TITLE },
+      { name: "twitter:description", content: PAGE_DESCRIPTION },
+      { name: "twitter:image", content: OG_IMAGE },
+    ],
+    links: [
+      { rel: "canonical", href: PAGE_URL },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(localBusinessJsonLd),
+      },
     ],
   }),
   component: HomePage,
@@ -230,7 +315,7 @@ function HomePage() {
       {/* HERO */}
       <section className="relative min-h-[100svh] flex items-center overflow-hidden diagonal-clip-b">
         <div className="absolute inset-0">
-          <img src={heroImg} alt="Modern luxury construction" className="h-full w-full object-cover scale-105" />
+          <img src={heroImg} alt="Sahara Constructions modern luxury home construction project in Bhusawal" className="h-full w-full object-cover scale-105" />
           <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
           <div className="absolute inset-0 bg-primary/30" />
         </div>
@@ -349,7 +434,7 @@ function HomePage() {
                   <div className="aspect-[1/1] overflow-hidden">
                     <img
                       src={p.img}
-                      alt={p.title}
+                      alt={`${p.title} — ${p.location} | Sahara Constructions`}
                       loading="lazy"
                       width={1280}
                       height={960}
@@ -443,7 +528,7 @@ function HomePage() {
                 </div>
                 <div className="relative">
                   <div className="absolute -inset-2 rounded-3xl bg-accent/30 blur-2xl" />
-                  <img src={nowbooking} alt="Kalash" loading="lazy" width={1280} height={960} className="relative rounded-3xl shadow-2xl" />
+                  <img src={nowbooking} alt="Kalash — 2 BHK luxury duplex row houses, Shantinagar, Yawal Road, Bhusawal" loading="lazy" width={1280} height={960} className="relative rounded-3xl shadow-2xl" />
                 </div>
               </div>
             </div>
@@ -493,7 +578,7 @@ function HomePage() {
                 <div className="aspect-[3/4] bg-muted">
                   <img
                     src={item.src}
-                    alt={item.label}
+                    alt={`Sahara Constructions catalogue — ${item.label}`}
                     loading="lazy"
                     className="h-full w-full object-cover object-top"
                   />
